@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 using PersonModel;
+using PersonRepository;
 
 namespace TimeSheetAPI
 {
@@ -28,6 +29,8 @@ namespace TimeSheetAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TimeSheet", Version = "v1" });
             });
             services.AddSingleton<PersonLogic>();
+            services.AddSingleton<Person>();
+            services.AddSingleton<Repository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,7 +43,7 @@ namespace TimeSheetAPI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TimeSheet v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

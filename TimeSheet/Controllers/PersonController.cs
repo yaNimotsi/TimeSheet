@@ -1,59 +1,62 @@
 ﻿using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
+
 using PersonModel;
+
+using PersonRepository;
 
 namespace TimeSheetAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("/person")]
     public class PersonController : ControllerBase
     {
         private readonly PersonLogic _personLogic;
-
-        public PersonController(PersonLogic logic)
+        private readonly Repository _repository;
+        public PersonController(PersonLogic logic, Repository repository)
         {
             _personLogic = logic;
+            _repository = repository;
         }
 
-        [HttpGet("/{id}")]
+        [HttpGet("byId/{id}")]
         // GET: PersonController
-        public Task<IActionResult> GetPersonById([FromRoute] int id)
+        public IActionResult GetPersonById([FromRoute] int id)
         {
-            //var person = new Task(x => _personLogic.GetPerson(id));
-            return null;
+            return Ok(_personLogic.GetPerson(_repository, id));
         }
 
-        [HttpGet("/{nameToSearch}")]
+        [HttpGet("byName/{nameToSearch}")]
         // GET: PersonController
         public IActionResult GetPersonByName([FromRoute] string nameToSearch)
         {
-            _personLogic.GetPerson(nameToSearch);
-            return null;
+            return Ok(_personLogic.GetPerson(_repository, nameToSearch));
         }
 
-        [HttpGet("skip/{nameToSearch}/taken/{takeCount}")]
+        [HttpGet("skip/{skipCount}/taken/{takeCount}")]
         // GET: PersonController
-        public IActionResult GetPersonByRange([FromRoute] string skipValue, [FromRoute] string takeCount)
+        public IActionResult GetPersonByRange([FromRoute] int skipCount, [FromRoute] int takeCount)
         {
-            return null;
+            return Ok(_personLogic.GetPerson(_repository, skipCount, takeCount));
         }
 
         [HttpPost]
-        public IActionResult CreatePerson ([FromBody] Person person)
+        public IActionResult CreatePerson([FromBody] Person person)
         {
-            return null;
+            return Ok(_personLogic.AddNewPerson(_repository, person));
         }
 
         [HttpPut("update/{id}")]
-        public IActionResult UpdatePersonById([FromRoute] string id, [FromBody] Person updatePerson)
+        public IActionResult UpdatePersonById([FromBody] Person updatePerson)
         {
-            return null;
+            return Ok(_personLogic.UpdatePerson(_repository, updatePerson));
         }
 
-        [HttpDelete("/{id}")]
-        public IActionResult DeletePersonById([FromRoute] string id)
+        [HttpDelete("{id}")]
+        public IActionResult DeletePersonById([FromRoute] int id)
         {
-            return null;
+            return Ok(_personLogic.DeletePerson(_repository, id));
         }
     }
 }

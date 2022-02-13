@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PersonModel\PersonModel.csproj" />
+    <ProjectReference Include="..\PersonRepository\PersonRepository.csproj" />
   </ItemGroup>
 
 </Project>

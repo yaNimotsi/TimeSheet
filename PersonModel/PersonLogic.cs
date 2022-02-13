@@ -8,41 +8,33 @@ namespace PersonModel
 {
     public class PersonLogic
     {
-        private Repository GetRepository()
+        public Person AddNewPerson(Repository repository, Person newPerson)
         {
-            return new Repository();
-        }
-        public void AddNewPerson(Person newPerson)
-        {
-            var repository = GetRepository();
             repository.PersonList.Add(newPerson);
+            return newPerson;
         }
 
-        public Person GetPerson(int personId)
+        public Person GetPerson(Repository repository, int personId)
         {
-            var repository = GetRepository();
             var personById = repository.PersonList.Where(x => x.Id == personId);
 
             return personById.FirstOrDefault();
         }
 
-        public IEnumerable<Person> GetPerson(string nameToSearch)
+        public IEnumerable<Person> GetPerson(Repository repository, string nameToSearch)
         {
-            var repository = GetRepository();
             return repository.PersonList.Where(x => x.FirstName == nameToSearch);
         }
 
-        public IEnumerable<Person> GetPerson(int skip, int take)
+        public IEnumerable<Person> GetPerson(Repository repository, int skip, int take)
         {
-            var repository = GetRepository();
-
             if (skip >= repository.PersonList.Count)
             {
                 return null;
             }
 
-            var maxValue = repository.PersonList.Count > take 
-                ? take : repository.PersonList.Count;
+            var maxValue = repository.PersonList.Count > (take + skip) 
+                ? (take + skip) : repository.PersonList.Count;
 
             var result = new List<Person>();
 
@@ -54,15 +46,12 @@ namespace PersonModel
             return result;
         }
 
-        public Person UpdatePerson(int id, Person newPersonData)
+        public Person UpdatePerson(Repository repository, Person newPersonData)
         {
-            var repository = GetRepository();
-
             if (!(repository.PersonList?.Count > 0)) return null;
 
-            var personToUpdate = GetPerson(id);
-
-            personToUpdate.Id = newPersonData.Id;
+            var personToUpdate = GetPerson(repository, newPersonData.Id);
+            
             personToUpdate.FirstName = newPersonData.FirstName;
             personToUpdate.LastName = newPersonData.LastName;
             personToUpdate.Age = newPersonData.Age;
@@ -72,13 +61,11 @@ namespace PersonModel
             return personToUpdate;
         }
 
-        public bool DeletePerson(int id)
+        public bool DeletePerson(Repository repository, int id)
         {
-            var repository = GetRepository();
-
             if (!(repository.PersonList?.Count > 0)) return false;
 
-            var personToDelete = GetPerson(id);
+            var personToDelete = GetPerson(repository, id);
 
             repository.PersonList.Remove(personToDelete);
 
