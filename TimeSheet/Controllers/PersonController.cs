@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using PersonModel;
 
 namespace TimeSheetAPI.Controllers
@@ -7,15 +8,18 @@ namespace TimeSheetAPI.Controllers
     [Route("api/[controller]")]
     public class PersonController : ControllerBase
     {
-        private static PersonLogic personLogic;
+        private readonly PersonLogic _personLogic;
 
-
+        public PersonController(PersonLogic logic)
+        {
+            _personLogic = logic;
+        }
 
         [HttpGet("/{id}")]
         // GET: PersonController
-        public IActionResult GetPersonById([FromRoute] int id)
+        public Task<IActionResult> GetPersonById([FromRoute] int id)
         {
-            
+            //var person = new Task(x => _personLogic.GetPerson(id));
             return null;
         }
 
@@ -23,6 +27,7 @@ namespace TimeSheetAPI.Controllers
         // GET: PersonController
         public IActionResult GetPersonByName([FromRoute] string nameToSearch)
         {
+            _personLogic.GetPerson(nameToSearch);
             return null;
         }
 
