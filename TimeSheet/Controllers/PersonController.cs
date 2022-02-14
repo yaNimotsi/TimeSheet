@@ -2,11 +2,10 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-using PersonModel;
+using TimeSheet.BisnesLogic;
+using TimeSheet.DB;
 
-using PersonRepository;
-
-namespace TimeSheetAPI.Controllers
+namespace TimeSheet.API.Controllers
 {
     [ApiController]
     [Route("/person")]

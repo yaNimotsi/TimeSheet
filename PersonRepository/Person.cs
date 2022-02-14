@@ -1,4 +1,4 @@
-﻿namespace PersonRepository
+﻿namespace TimeSheet.DB
 {
     public class Person
     {

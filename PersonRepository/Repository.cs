@@ -1,7 +1,8 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 
-namespace PersonRepository
+namespace TimeSheet.DB
 {
     public class Repository
     {

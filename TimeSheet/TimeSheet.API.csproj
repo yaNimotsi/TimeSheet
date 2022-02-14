@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PersonModel\PersonModel.csproj" />
-    <ProjectReference Include="..\PersonRepository\PersonRepository.csproj" />
+    <ProjectReference Include="..\PersonModel\TimeSheet.BisnesLogic.csproj" />
+    <ProjectReference Include="..\PersonRepository\TimeSheet.DB.csproj" />
   </ItemGroup>
 
 </Project>

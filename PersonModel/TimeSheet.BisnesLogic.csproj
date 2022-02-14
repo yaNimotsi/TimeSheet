@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PersonRepository\PersonRepository.csproj" />
+    <ProjectReference Include="..\PersonRepository\TimeSheet.DB.csproj" />
   </ItemGroup>
 
 </Project>

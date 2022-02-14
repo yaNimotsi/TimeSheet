@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using PersonRepository;
 
+using TimeSheet.DB;
 
-namespace PersonModel
+namespace TimeSheet.BisnesLogic
 {
     public class PersonLogic
     {
@@ -23,7 +23,7 @@ namespace PersonModel
 
         public IEnumerable<Person> GetPerson(Repository repository, string nameToSearch)
         {
-            return repository.PersonList.Where(x => x.FirstName == nameToSearch);
+            return repository.PersonList.Where(x => x.FirstName.ToLower() == nameToSearch.ToLower());
         }
 
         public IEnumerable<Person> GetPerson(Repository repository, int skip, int take)
@@ -33,8 +33,8 @@ namespace PersonModel
                 return null;
             }
 
-            var maxValue = repository.PersonList.Count > (take + skip) 
-                ? (take + skip) : repository.PersonList.Count;
+            var maxValue = repository.PersonList.Count > take + skip
+                ? take + skip : repository.PersonList.Count;
 
             var result = new List<Person>();
 
@@ -51,7 +51,7 @@ namespace PersonModel
             if (!(repository.PersonList?.Count > 0)) return null;
 
             var personToUpdate = GetPerson(repository, newPersonData.Id);
-            
+
             personToUpdate.FirstName = newPersonData.FirstName;
             personToUpdate.LastName = newPersonData.LastName;
             personToUpdate.Age = newPersonData.Age;
