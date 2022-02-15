@@ -5,8 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-using TimeSheet.BisnesLogic;
+using TimeSheet.BusinessLogic;
 using TimeSheet.DB;
+using TimeSheet.DB.Entitys;
 
 namespace TimeSheet.API
 {

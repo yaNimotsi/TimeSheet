@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 using TimeSheet.DB;
+using TimeSheet.DB.Entitys;
 
-namespace TimeSheet.BisnesLogic
+namespace TimeSheet.BusinessLogic
 {
     public class PersonLogic
     {

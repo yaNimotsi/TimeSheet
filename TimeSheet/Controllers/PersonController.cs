@@ -2,8 +2,9 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-using TimeSheet.BisnesLogic;
+using TimeSheet.BusinessLogic;
 using TimeSheet.DB;
+using TimeSheet.DB.Entitys;
 
 namespace TimeSheet.API.Controllers
 {

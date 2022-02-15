@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 
+using TimeSheet.DB.Entitys;
+
 namespace TimeSheet.DB
 {
     public class Repository
