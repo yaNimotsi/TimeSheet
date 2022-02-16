@@ -37,11 +37,7 @@ namespace TimeSheet.API
 
             services.AddDbContext<MyDBContext>(options => 
                 options.UseSqlServer(connectionString));
-
-            services.AddSingleton<PersonLogic>();
-            services.AddSingleton<Person>();
-            services.AddSingleton<Repository1>();
-
+            
             services.AddSingleton<User>();
             services.AddSingleton<UserLogic>();
             services.AddSingleton<IUserRepository, UserRepository>();
