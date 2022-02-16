@@ -32,9 +32,11 @@ namespace TimeSheet.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TimeSheet", Version = "v1" });
             });
-            
+
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+
             services.AddDbContext<MyDBContext>(options => 
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(connectionString));
 
             services.AddSingleton<PersonLogic>();
             services.AddSingleton<Person>();

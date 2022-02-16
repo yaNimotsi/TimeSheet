@@ -18,7 +18,9 @@ namespace TimeSheet.DB
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().Ignore(x => x.Comment);
+            modelBuilder.Entity<User>().HasIndex(x => x.Id).IsUnique();
+            modelBuilder.Entity<Employee>().HasIndex(x => x.Id).IsUnique();
+            //modelBuilder.Entity<User>().Ignore(x => x.Comment);
         }
     }
 }

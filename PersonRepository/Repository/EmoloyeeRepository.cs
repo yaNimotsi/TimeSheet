@@ -33,7 +33,7 @@ namespace TimeSheet.DB.Repository
             var maxValue = dbContext.Employees.Count() > take + skip
                 ? take + skip : dbContext.Employees.Count();
 
-            return await dbContext.Employees.Where(x => x.Id >= skip && x.Id < maxValue).ToListAsync();
+            return await dbContext.Employees.Where(x => x.Id >= skip && x.Id <= maxValue).ToListAsync();
         }
 
         public async Task<bool> AddAsync(MyDBContext context, BaseEntity<int> entity)
@@ -54,8 +54,8 @@ namespace TimeSheet.DB.Repository
             if (updatedEmployee == null) return null;
 
             if (dbContext.Employees.Any() == false) return null;
-
-            var dbEntity = await dbContext.Employees.FirstOrDefaultAsync(x => x.Id == updatedEmployee.Id);
+            
+            var dbEntity = await dbContext.Employees.FindAsync(entity.Id);
 
             dbEntity.FirstName = updatedEmployee.FirstName;
             dbEntity.LastName = updatedEmployee.LastName;
