@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using TimeSheet.BusinessLogic;
 using TimeSheet.DB;
-using TimeSheet.DB.Entitys;
+using TimeSheet.DB.Entity;
 
 namespace TimeSheet.API.Controllers
 {
@@ -13,8 +13,8 @@ namespace TimeSheet.API.Controllers
     public class PersonController : ControllerBase
     {
         private readonly PersonLogic _personLogic;
-        private readonly Repository _repository;
-        public PersonController(PersonLogic logic, Repository repository)
+        private readonly Repository1 _repository;
+        public PersonController(PersonLogic logic, Repository1 repository)
         {
             _personLogic = logic;
             _repository = repository;

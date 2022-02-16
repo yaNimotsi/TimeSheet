@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -7,7 +8,9 @@ using Microsoft.OpenApi.Models;
 
 using TimeSheet.BusinessLogic;
 using TimeSheet.DB;
-using TimeSheet.DB.Entitys;
+using TimeSheet.DB.Entity;
+using TimeSheet.DB.Interface;
+using TimeSheet.DB.Repository;
 
 namespace TimeSheet.API
 {
@@ -29,9 +32,21 @@ namespace TimeSheet.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TimeSheet", Version = "v1" });
             });
+            
+            services.AddDbContext<MyDBContext>(options => 
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddSingleton<PersonLogic>();
             services.AddSingleton<Person>();
-            services.AddSingleton<Repository>();
+            services.AddSingleton<Repository1>();
+
+            services.AddSingleton<User>();
+            services.AddSingleton<UserLogic>();
+            services.AddSingleton<IUserRepository, UserRepository>();
+
+            services.AddSingleton<Employee>();
+            services.AddSingleton<EmployeeLogic>();
+            services.AddSingleton<IEmployeeRepository, EmployeeRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,33 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using TimeSheet.DB;
-using TimeSheet.DB.Entitys;
+using TimeSheet.DB.Entity;
 
 namespace TimeSheet.BusinessLogic
 {
     public class PersonLogic
     {
-        public Person AddNewPerson(Repository repository, Person newPerson)
+        public Person AddNewPerson(Repository1 repository, Person newPerson)
         {
             repository.PersonList.Add(newPerson);
             return newPerson;
         }
 
-        public Person GetPerson(Repository repository, int personId)
+        public Person GetPerson(Repository1 repository, int personId)
         {
             var personById = repository.PersonList.Where(x => x.Id == personId);
 
             return personById.FirstOrDefault();
         }
 
-        public IEnumerable<Person> GetPerson(Repository repository, string nameToSearch)
+        public IEnumerable<Person> GetPerson(Repository1 repository, string nameToSearch)
         {
             return repository.PersonList.Where(x => x.FirstName.ToLower() == nameToSearch.ToLower());
         }
 
-        public IEnumerable<Person> GetPerson(Repository repository, int skip, int take)
+        public IEnumerable<Person> GetPerson(Repository1 repository, int skip, int take)
         {
             if (skip >= repository.PersonList.Count)
             {
@@ -47,7 +46,7 @@ namespace TimeSheet.BusinessLogic
             return result;
         }
 
-        public Person UpdatePerson(Repository repository, Person newPersonData)
+        public Person UpdatePerson(Repository1 repository, Person newPersonData)
         {
             if (!(repository.PersonList?.Count > 0)) return null;
 
@@ -62,7 +61,7 @@ namespace TimeSheet.BusinessLogic
             return personToUpdate;
         }
 
-        public bool DeletePerson(Repository repository, int id)
+        public bool DeletePerson(Repository1 repository, int id)
         {
             if (!(repository.PersonList?.Count > 0)) return false;
 

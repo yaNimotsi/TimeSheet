@@ -1,4 +1,4 @@
-﻿namespace TimeSheet.DB.Entitys
+﻿namespace TimeSheet.DB.Entity
 {
     public class Person
     {

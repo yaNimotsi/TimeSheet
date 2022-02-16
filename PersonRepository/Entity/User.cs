@@ -1,12 +1,13 @@
-﻿namespace TimeSheet.DB.Entitys
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace TimeSheet.DB.Entity
 {
-    internal class User
+    [Table("User", Schema = "TimeSheet")]
+    public sealed class User : BaseEntity<int>
     {
-        public int Id { get; set; }
         public string Comment { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MiddleName { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }

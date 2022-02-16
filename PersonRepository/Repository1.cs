@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 
-using TimeSheet.DB.Entitys;
+using TimeSheet.DB.Entity;
 
 namespace TimeSheet.DB
 {
-    public class Repository
+    public class Repository1
     {
         private static List<Person> _personsList;
 
@@ -16,7 +16,7 @@ namespace TimeSheet.DB
             set => _personsList = value;
         }
 
-        public Repository()
+        public Repository1()
         {
             StartGeneratePersonList();
         }
