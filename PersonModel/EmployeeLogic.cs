@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using TimeSheet.DB;
@@ -9,7 +10,7 @@ namespace TimeSheet.BusinessLogic
 {
     public class EmployeeLogic
     {
-        public async Task<Employee> AddNewEmployeeAsync(MyDBContext context, IEmployeeRepository repository, BaseEntity<int> entity)
+        public async Task<Employee> AddNewEmployeeAsync(CancellationTokenSource token, MyDBContext context, IEmployeeRepository repository, BaseEntity<int> entity)
         {
             if (entity == null) return null;
 
@@ -21,26 +22,26 @@ namespace TimeSheet.BusinessLogic
             return null;
         }
 
-        public async Task<IReadOnlyList<Employee>> GetEmployeeByIDAsync(MyDBContext context, IEmployeeRepository repository, int id)
+        public async Task<IReadOnlyList<Employee>> GetEmployeeByIDAsync(CancellationTokenSource token, MyDBContext context, IEmployeeRepository repository, int id)
         {
             var entityFromBase = await repository.GetAsync(context, id);
 
             return entityFromBase;
         }
 
-        public async Task<IReadOnlyList<Employee>> GetEmployeeByNameAsync(MyDBContext context, IEmployeeRepository repository, string nameToSearch)
+        public async Task<IReadOnlyList<Employee>> GetEmployeeByNameAsync(CancellationTokenSource token, MyDBContext context, IEmployeeRepository repository, string nameToSearch)
         {
             return await repository.GetAsync(context, nameToSearch);
         }
 
-        public async Task<IReadOnlyList<Employee>> GetEmployeeByRangeAsync(MyDBContext context, IEmployeeRepository repository, int skip, int take)
+        public async Task<IReadOnlyList<Employee>> GetEmployeeByRangeAsync(CancellationTokenSource token, MyDBContext context, IEmployeeRepository repository, int skip, int take)
         {
             var result = await repository.GetAsync(context, skip, take);
 
             return result;
         }
 
-        public async Task<Employee> UpdateEmployeeAsync(MyDBContext context, IEmployeeRepository repository, BaseEntity<int> entity)
+        public async Task<Employee> UpdateEmployeeAsync(CancellationTokenSource token, MyDBContext context, IEmployeeRepository repository, BaseEntity<int> entity)
         {
             if (entity == null) return null;
 
@@ -49,7 +50,7 @@ namespace TimeSheet.BusinessLogic
             return updateUser;
         }
 
-        public async Task<bool> DeleteEmployeeAsync(MyDBContext context, IEmployeeRepository repository, int id)
+        public async Task<bool> DeleteEmployeeAsync(CancellationTokenSource token, MyDBContext context, IEmployeeRepository repository, int id)
         {
             return await repository.DeleteAsync(context, id);
         }

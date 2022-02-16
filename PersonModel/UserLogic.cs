@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using TimeSheet.DB;
@@ -9,7 +10,7 @@ namespace TimeSheet.BusinessLogic
 {
     public class UserLogic
     {
-        public async Task<User> AddNewUserAsync(MyDBContext context, IUserRepository repository, BaseEntity<int> entity)
+        public async Task<User> AddNewUserAsync(CancellationTokenSource token, MyDBContext context, IUserRepository repository, BaseEntity<int> entity)
         {
             if (entity == null) return null;
 
@@ -21,26 +22,26 @@ namespace TimeSheet.BusinessLogic
             return null;
         }
 
-        public async Task<IReadOnlyList<User>> GetUserByIDAsync(MyDBContext context, IUserRepository repository, int id)
+        public async Task<IReadOnlyList<User>> GetUserByIDAsync(CancellationTokenSource token, MyDBContext context, IUserRepository repository, int id)
         {
             var entityFromBase = await repository.GetAsync(context, id);
 
             return entityFromBase;
         }
 
-        public async Task<IReadOnlyList<User>> GetUserByNameAsync(MyDBContext context, IUserRepository repository, string nameToSearch)
+        public async Task<IReadOnlyList<User>> GetUserByNameAsync(CancellationTokenSource token, MyDBContext context, IUserRepository repository, string nameToSearch)
         {
             return await repository.GetAsync(context, nameToSearch);
         }
 
-        public async Task<IReadOnlyList<User>> GetUserByRangeAsync(MyDBContext context, IUserRepository repository, int skip, int take)
+        public async Task<IReadOnlyList<User>> GetUserByRangeAsync(CancellationTokenSource token, MyDBContext context, IUserRepository repository, int skip, int take)
         {
             var result = await repository.GetAsync(context, skip, take);
 
             return result;
         }
 
-        public async Task<User> UpdateUserAsync(MyDBContext context, IUserRepository repository, BaseEntity<int> entity)
+        public async Task<User> UpdateUserAsync(CancellationTokenSource token, MyDBContext context, IUserRepository repository, BaseEntity<int> entity)
         {
             if (entity == null) return null;
 
@@ -49,7 +50,7 @@ namespace TimeSheet.BusinessLogic
             return updateUser;
         }
 
-        public async Task<bool> DeleteUserAsync(MyDBContext context, IUserRepository repository, int id)
+        public async Task<bool> DeleteUserAsync(CancellationTokenSource token, MyDBContext context, IUserRepository repository, int id)
         {
             return await repository.DeleteAsync(context, id);
         }

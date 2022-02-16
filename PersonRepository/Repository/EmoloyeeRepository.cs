@@ -11,15 +11,15 @@ namespace TimeSheet.DB.Repository
 {
     public class EmployeeRepository : IEmployeeRepository
     {
-        public async Task<IReadOnlyList<Employee>> GetAsync(MyDBContext dbContext, int userId)
+        public async Task<IReadOnlyList<Employee>> GetAsync(MyDBContext dbContext, int employeeId)
         {
-            var userByIdList = await dbContext.Employees.Where(x => x.Id == userId).ToListAsync();
-            return userByIdList;
+            var employeeByIdList = await dbContext.Employees.Where(x => x.Id == employeeId).ToListAsync();
+            return employeeByIdList;
         }
 
         public async Task<IReadOnlyList<Employee>> GetAsync(MyDBContext dbContext, string nameToSearch)
         {
-            var userByNameList = await dbContext.Employees.Where(x => x.FirstName == nameToSearch).ToListAsync();
+            var employeeByNameList = await dbContext.Employees.Where(x => x.FirstName == nameToSearch).ToListAsync();
             return null;
         }
 
@@ -38,11 +38,11 @@ namespace TimeSheet.DB.Repository
 
         public async Task<bool> AddAsync(MyDBContext context, BaseEntity<int> entity)
         {
-            var newUser = (Employee)entity;
+            var newemployee = (Employee)entity;
 
-            if (newUser == null) return false;
+            if (newemployee == null) return false;
 
-            await context.Employees.AddAsync(newUser);
+            await context.Employees.AddAsync(newemployee);
             await context.SaveChangesAsync();
             return true;
         }
@@ -72,9 +72,9 @@ namespace TimeSheet.DB.Repository
         {
             if (dbContext.Employees.Any() == false) return false;
 
-            var userToDelete = dbContext.Employees.First(x => x.Id == id);
+            var employeeToDelete = dbContext.Employees.First(x => x.Id == id);
 
-            userToDelete.IsDeleted = true;
+            employeeToDelete.IsDeleted = true;
 
             await dbContext.SaveChangesAsync();
 

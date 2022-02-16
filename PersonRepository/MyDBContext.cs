@@ -20,7 +20,6 @@ namespace TimeSheet.DB
         {
             modelBuilder.Entity<User>().HasIndex(x => x.Id).IsUnique();
             modelBuilder.Entity<Employee>().HasIndex(x => x.Id).IsUnique();
-            //modelBuilder.Entity<User>().Ignore(x => x.Comment);
         }
     }
 }

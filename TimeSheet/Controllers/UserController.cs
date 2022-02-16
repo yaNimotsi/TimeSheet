@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+
 using TimeSheet.BusinessLogic;
 using TimeSheet.DB;
 using TimeSheet.DB.Entity;
@@ -17,19 +18,21 @@ namespace TimeSheet.API.Controllers
         private readonly UserLogic _userLogic;
         private readonly IUserRepository _repository;
         private readonly MyDBContext _context;
+        private readonly CancellationTokenSource _token;
 
         public UserController(UserLogic userLogic, IUserRepository repository, MyDBContext context)
         {
             _userLogic = userLogic;
             _repository = repository;
             _context = context;
+            _token.CancelAfter(5000);
         }
 
         [HttpGet("byId/{id}")]
         // GET: PersonController
         public async Task<ActionResult<IReadOnlyList<User>>> GetUserById([FromRoute] int id)
         {
-            var result = await _userLogic.GetUserByIDAsync(_context, _repository, id);
+            var result = await _userLogic.GetUserByIDAsync(_token, _context, _repository, id);
             
             if (result is not { Count: > 0 })
             {
@@ -43,7 +46,7 @@ namespace TimeSheet.API.Controllers
         // GET: PersonController
         public async Task<ActionResult<IReadOnlyList<User>>> GetUserByName([FromRoute] string nameToSearch)
         {
-            var result = await _userLogic.GetUserByNameAsync(_context, _repository, nameToSearch);
+            var result = await _userLogic.GetUserByNameAsync(_token, _context, _repository, nameToSearch);
             
             if (result is not { Count: > 0 })
             {
@@ -57,7 +60,7 @@ namespace TimeSheet.API.Controllers
         // GET: PersonController
         public async Task<ActionResult<IReadOnlyList<User>>> GetUserByRange([FromRoute] int skipCount, [FromRoute] int takeCount)
         {
-            var result = await _userLogic.GetUserByRangeAsync(_context, _repository, skipCount, takeCount);
+            var result = await _userLogic.GetUserByRangeAsync(_token, _context, _repository, skipCount, takeCount);
 
             if (result is not { Count: > 0 })
             {
@@ -70,7 +73,7 @@ namespace TimeSheet.API.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateUser([FromBody] User entity)
         {
-            if (await _userLogic.AddNewUserAsync(_context, _repository, entity) != null)
+            if (await _userLogic.AddNewUserAsync(_token, _context, _repository, entity) != null)
             {
                 return Ok(entity);
             }
@@ -82,7 +85,7 @@ namespace TimeSheet.API.Controllers
         {
             entity.Id = id;
 
-            var response = await _userLogic.UpdateUserAsync(_context, _repository, entity);
+            var response = await _userLogic.UpdateUserAsync(_token, _context, _repository, entity);
 
             return response == null ? NoContent() : Ok(response);
         }
@@ -90,7 +93,7 @@ namespace TimeSheet.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUserById([FromRoute] int id)
         {
-            var response = await _userLogic.DeleteUserAsync(_context, _repository, id);
+            var response = await _userLogic.DeleteUserAsync(_token, _context, _repository, id);
             
             return response ? Ok(true) : NoContent();
         }
