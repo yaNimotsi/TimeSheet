@@ -25,6 +25,7 @@ namespace TimeSheet.API.Controllers
             _userLogic = userLogic;
             _repository = repository;
             _context = context;
+            _token = new CancellationTokenSource();
             _token.CancelAfter(5000);
         }
 

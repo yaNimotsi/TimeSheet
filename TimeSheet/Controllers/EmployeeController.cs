@@ -26,6 +26,7 @@ namespace TimeSheet.API.Controllers
             _employeeLogic = employeeLogic;
             _repository = repository;
             _context = context;
+            _token = new CancellationTokenSource();
             _token.CancelAfter(5000);
         }
 
@@ -34,7 +35,7 @@ namespace TimeSheet.API.Controllers
         public async Task<ActionResult<IReadOnlyList<Employee>>> GetEmployeeById([FromRoute] int id)
         {
             var result = await _employeeLogic.GetEmployeeByIDAsync(_token, _context, _repository, id);
-            
+
             if (result is not { Count: > 0 })
             {
                 return NoContent();

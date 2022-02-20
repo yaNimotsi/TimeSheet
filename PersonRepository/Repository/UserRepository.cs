@@ -20,7 +20,7 @@ namespace TimeSheet.DB.Repository
         public async Task<IReadOnlyList<User>> GetAsync(MyDBContext dbContext, string nameToSearch)
         {
             var userByNameList = await dbContext.Users.Where(x => x.FirstName == nameToSearch).ToListAsync();
-            return null;
+            return userByNameList;
         }
 
         public async Task<IReadOnlyList<User>> GetAsync(MyDBContext dbContext, int skip, int take)
