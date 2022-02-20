@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using TimeSheet.DB.Entity;
@@ -11,19 +12,19 @@ namespace TimeSheet.DB.Repository
 {
     public class UserRepository : IUserRepository
     {
-        public async Task<IReadOnlyList<User>> GetAsync(MyDBContext dbContext, int userId)
+        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token, MyDBContext dbContext, int userId)
         {
             var userByIdList = await dbContext.Users.Where(x => x.Id == userId).ToListAsync();
             return userByIdList;
         }
 
-        public async Task<IReadOnlyList<User>> GetAsync(MyDBContext dbContext, string nameToSearch)
+        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token, MyDBContext dbContext, string nameToSearch)
         {
             var userByNameList = await dbContext.Users.Where(x => x.FirstName == nameToSearch).ToListAsync();
             return userByNameList;
         }
 
-        public async Task<IReadOnlyList<User>> GetAsync(MyDBContext dbContext, int skip, int take)
+        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token, MyDBContext dbContext, int skip, int take)
         {
             if (skip >= dbContext.Users.Count())
             {
@@ -36,7 +37,7 @@ namespace TimeSheet.DB.Repository
             return await dbContext.Users.Where(x => x.Id >= skip && x.Id < maxValue).ToListAsync();
         }
 
-        public async Task<bool> AddAsync(MyDBContext context, BaseEntity<int> entity)
+        public async Task<bool> AddAsync(CancellationTokenSource token, MyDBContext context, BaseEntity<int> entity)
         {
 
             var newUser = (User)entity;
@@ -48,7 +49,7 @@ namespace TimeSheet.DB.Repository
             return true;
         }
         
-        public async Task<User> UpdateAsync(MyDBContext dbContext, BaseEntity<int> entity)
+        public async Task<User> UpdateAsync(CancellationTokenSource token, MyDBContext dbContext, BaseEntity<int> entity)
         {
             var updatedUser = (User)entity;
             if (updatedUser == null) return null;
@@ -68,7 +69,7 @@ namespace TimeSheet.DB.Repository
             return updatedUser;
         }
 
-        public async Task<bool> DeleteAsync(MyDBContext dbContext, int id)
+        public async Task<bool> DeleteAsync(CancellationTokenSource token, MyDBContext dbContext, int id)
         {
             if (dbContext.Users.Any() == false) return false;
 
