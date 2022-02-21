@@ -10,11 +10,19 @@ namespace TimeSheet.BusinessLogic
 {
     public class UserLogic
     {
-        public async Task<User> AddNewUserAsync(CancellationTokenSource token, MyDBContext context, IUserRepository repository, BaseEntity<int> entity)
+        private readonly MyDBContext _context;
+        private readonly IUserRepository _repository;
+        public UserLogic(MyDBContext context, IUserRepository repository)
+        {
+            _context = context;
+            _repository = repository;
+        }
+
+        public async Task<User> AddNewUserAsync(CancellationTokenSource token, BaseEntity<int> entity)
         {
             if (entity == null) return null;
 
-            if (await repository.AddAsync(token, context, entity))
+            if (await _repository.AddAsync(token, _context, entity))
             {
                 return (User)entity;
             }
@@ -22,37 +30,37 @@ namespace TimeSheet.BusinessLogic
             return null;
         }
 
-        public async Task<IReadOnlyList<User>> GetUserByIDAsync(CancellationTokenSource token, MyDBContext context, IUserRepository repository, int id)
+        public async Task<IReadOnlyList<User>> GetUserByIdAsync(CancellationTokenSource token,  int id)
         {
-            var entityFromBase = await repository.GetAsync(token, context, id);
+            var entityFromBase = await _repository.GetAsync(token, _context, id);
 
             return entityFromBase;
         }
 
-        public async Task<IReadOnlyList<User>> GetUserByNameAsync(CancellationTokenSource token, MyDBContext context, IUserRepository repository, string nameToSearch)
+        public async Task<IReadOnlyList<User>> GetUserByNameAsync(CancellationTokenSource token,  string nameToSearch)
         {
-            return await repository.GetAsync(token, context, nameToSearch);
+            return await _repository.GetAsync(token, _context, nameToSearch);
         }
 
-        public async Task<IReadOnlyList<User>> GetUserByRangeAsync(CancellationTokenSource token, MyDBContext context, IUserRepository repository, int skip, int take)
+        public async Task<IReadOnlyList<User>> GetUserByRangeAsync(CancellationTokenSource token,  int skip, int take)
         {
-            var result = await repository.GetAsync(token, context, skip, take);
+            var result = await _repository.GetAsync(token, _context, skip, take);
 
             return result;
         }
 
-        public async Task<User> UpdateUserAsync(CancellationTokenSource token, MyDBContext context, IUserRepository repository, BaseEntity<int> entity)
+        public async Task<User> UpdateUserAsync(CancellationTokenSource token,  BaseEntity<int> entity)
         {
             if (entity == null) return null;
 
-            var updateUser = await repository.UpdateAsync(token, context, entity);
+            var updateUser = await _repository.UpdateAsync(token, _context, entity);
 
             return updateUser;
         }
 
-        public async Task<bool> DeleteUserAsync(CancellationTokenSource token, MyDBContext context, IUserRepository repository, int id)
+        public async Task<bool> DeleteUserAsync(CancellationTokenSource token, int id)
         {
-            return await repository.DeleteAsync(token, context, id);
+            return await _repository.DeleteAsync(token, _context, id);
         }
     }
 }
