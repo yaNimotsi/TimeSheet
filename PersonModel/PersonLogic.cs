@@ -1,75 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 using TimeSheet.DB;
 
-namespace TimeSheet.BisnesLogic
+namespace TimeSheet.BusinessLogic
 {
     public class PersonLogic
     {
-        public Person AddNewPerson(Repository repository, Person newPerson)
+        private readonly IPersonRepository _repository;
+        public PersonLogic(IPersonRepository repository)
         {
-            repository.PersonList.Add(newPerson);
-            return newPerson;
+            _repository = repository;
+        }
+        
+        public Person GetPerson(int personId)
+        {
+            var personById = _repository.Get(personId);
+
+            return personById;
         }
 
-        public Person GetPerson(Repository repository, int personId)
+        public IEnumerable<Person> GetPerson(string personName)
         {
-            var personById = repository.PersonList.Where(x => x.Id == personId);
-
-            return personById.FirstOrDefault();
+            return _repository.Get(personName);
         }
 
-        public IEnumerable<Person> GetPerson(Repository repository, string nameToSearch)
+        public IEnumerable<Person> GetPerson(int skip, int take)
         {
-            return repository.PersonList.Where(x => x.FirstName.ToLower() == nameToSearch.ToLower());
+            return _repository.Get(skip, take);
         }
 
-        public IEnumerable<Person> GetPerson(Repository repository, int skip, int take)
+        public Person AddNewPerson(Person newPerson)
         {
-            if (skip >= repository.PersonList.Count)
-            {
-                return null;
-            }
-
-            var maxValue = repository.PersonList.Count > take + skip
-                ? take + skip : repository.PersonList.Count;
-
-            var result = new List<Person>();
-
-            for (int i = skip; i < maxValue; i++)
-            {
-                result.Add(repository.PersonList[i]);
-            }
-
-            return result;
+            return _repository.Add(newPerson);
         }
 
-        public Person UpdatePerson(Repository repository, Person newPersonData)
+        public Person UpdatePerson(Person newPersonData)
         {
-            if (!(repository.PersonList?.Count > 0)) return null;
-
-            var personToUpdate = GetPerson(repository, newPersonData.Id);
-
-            personToUpdate.FirstName = newPersonData.FirstName;
-            personToUpdate.LastName = newPersonData.LastName;
-            personToUpdate.Age = newPersonData.Age;
-            personToUpdate.Company = newPersonData.Company;
-            personToUpdate.Email = newPersonData.Email;
-
-            return personToUpdate;
+            return newPersonData == null ? null : _repository.Update(newPersonData);
         }
 
-        public bool DeletePerson(Repository repository, int id)
+        public bool DeletePerson(int id)
         {
-            if (!(repository.PersonList?.Count > 0)) return false;
-
-            var personToDelete = GetPerson(repository, id);
-
-            repository.PersonList.Remove(personToDelete);
-
-            return true;
+            return _repository.Delete(id);
         }
     }
 }

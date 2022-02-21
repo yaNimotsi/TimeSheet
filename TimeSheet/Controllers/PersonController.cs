@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-
+﻿
 using Microsoft.AspNetCore.Mvc;
 
-using TimeSheet.BisnesLogic;
+using TimeSheet.BusinessLogic;
 using TimeSheet.DB;
 
 namespace TimeSheet.API.Controllers
@@ -12,50 +11,54 @@ namespace TimeSheet.API.Controllers
     public class PersonController : ControllerBase
     {
         private readonly PersonLogic _personLogic;
-        private readonly Repository _repository;
-        public PersonController(PersonLogic logic, Repository repository)
+        public PersonController(PersonLogic logic)
         {
             _personLogic = logic;
-            _repository = repository;
         }
 
         [HttpGet("byId/{id}")]
         // GET: PersonController
         public IActionResult GetPersonById([FromRoute] int id)
         {
-            return Ok(_personLogic.GetPerson(_repository, id));
+            var response = _personLogic.GetPerson(id);
+            return response == null ? NoContent() : Ok(response);
         }
 
         [HttpGet("byName/{nameToSearch}")]
         // GET: PersonController
         public IActionResult GetPersonByName([FromRoute] string nameToSearch)
         {
-            return Ok(_personLogic.GetPerson(_repository, nameToSearch));
+            var response = _personLogic.GetPerson(nameToSearch);
+            return response == null ? NoContent() : Ok(response);
         }
 
         [HttpGet("skip/{skipCount}/taken/{takeCount}")]
         // GET: PersonController
         public IActionResult GetPersonByRange([FromRoute] int skipCount, [FromRoute] int takeCount)
         {
-            return Ok(_personLogic.GetPerson(_repository, skipCount, takeCount));
+            var response = _personLogic.GetPerson(skipCount, takeCount);
+            return response == null ? NoContent() : Ok(response);
         }
 
         [HttpPost]
         public IActionResult CreatePerson([FromBody] Person person)
         {
-            return Ok(_personLogic.AddNewPerson(_repository, person));
+            var response = _personLogic.AddNewPerson(person);
+            return response == null ? NoContent() : Ok(response);
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("update/")]
         public IActionResult UpdatePersonById([FromBody] Person updatePerson)
         {
-            return Ok(_personLogic.UpdatePerson(_repository, updatePerson));
+            var response = _personLogic.UpdatePerson(updatePerson);
+            return response == null ? NoContent() : Ok(response);
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeletePersonById([FromRoute] int id)
         {
-            return Ok(_personLogic.DeletePerson(_repository, id));
+            var response = _personLogic.DeletePerson(id);
+            return response == false ? BadRequest(false) : Ok(true);
         }
     }
 }

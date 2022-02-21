@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.32126.317
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeSheet.API", "TimeSheet\TimeSheet.API.csproj", "{E440D892-3F1D-438B-858D-4961ECD03B66}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeSheet.BisnesLogic", "PersonModel\TimeSheet.BisnesLogic.csproj", "{8E475717-73A6-47CD-8C93-CF4194B72080}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeSheet.BusinessLogic", "PersonModel\TimeSheet.BusinessLogic.csproj", "{8E475717-73A6-47CD-8C93-CF4194B72080}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeSheet.DB", "PersonRepository\TimeSheet.DB.csproj", "{F78D957A-1D60-4878-913C-AADBFF0D3240}"
 EndProject

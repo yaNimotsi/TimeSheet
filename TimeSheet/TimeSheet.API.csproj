@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PersonModel\TimeSheet.BisnesLogic.csproj" />
+    <ProjectReference Include="..\PersonModel\TimeSheet.BusinessLogic.csproj" />
     <ProjectReference Include="..\PersonRepository\TimeSheet.DB.csproj" />
   </ItemGroup>
 

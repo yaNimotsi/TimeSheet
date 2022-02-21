@@ -4,8 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-
-using TimeSheet.BisnesLogic;
+using TimeSheet.BusinessLogic;
 using TimeSheet.DB;
 
 namespace TimeSheet.API
@@ -30,7 +29,7 @@ namespace TimeSheet.API
             });
             services.AddSingleton<PersonLogic>();
             services.AddSingleton<Person>();
-            services.AddSingleton<Repository>();
+            services.AddSingleton<IPersonRepository, PersonRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
