@@ -1,5 +1,7 @@
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,8 +24,7 @@ namespace TimeSheet.API
         }
 
         public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
 
@@ -32,22 +33,19 @@ namespace TimeSheet.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TimeSheet", Version = "v1" });
             });
-
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
-
-            services.AddDbContext<MyDBContext>(options => 
-                options.UseSqlServer(connectionString));
+            
+            services.AddDbContext<MyDbContext>(options => 
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             
             services.AddSingleton<User>();
-            services.AddSingleton<UserLogic>();
-            services.AddSingleton<IUserRepository, UserRepository>();
-
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<UserLogic>();
+            
             services.AddSingleton<Employee>();
-            services.AddSingleton<EmployeeLogic>();
-            services.AddSingleton<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<EmployeeLogic>();
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

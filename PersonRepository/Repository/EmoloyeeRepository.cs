@@ -12,51 +12,57 @@ namespace TimeSheet.DB.Repository
 {
     public class EmployeeRepository : IEmployeeRepository
     {
-        public async Task<IReadOnlyList<Employee>> GetAsync(CancellationTokenSource token, MyDBContext dbContext, int employeeId)
+        private readonly MyDbContext _dbContext;
+
+        public EmployeeRepository(MyDbContext dbContext)
         {
-            var employeeByIdList = await dbContext.Employees.Where(x => x.Id == employeeId).ToListAsync();
+            _dbContext = dbContext;
+        }
+        public async Task<IReadOnlyList<Employee>> GetAsync(CancellationTokenSource token, int employeeId)
+        {
+            var employeeByIdList = await _dbContext.Employees.Where(x => x.Id == employeeId).ToListAsync();
             return employeeByIdList;
         }
 
-        public async Task<IReadOnlyList<Employee>> GetAsync(CancellationTokenSource token, MyDBContext dbContext, string nameToSearch)
+        public async Task<IReadOnlyList<Employee>> GetAsync(CancellationTokenSource token, string nameToSearch)
         {
-            var employeeByNameList = await dbContext.Employees.Where(x => x.FirstName.ToLower() == nameToSearch.ToLower()).ToListAsync();
+            var employeeByNameList = await _dbContext.Employees.Where(x => x.FirstName.ToLower() == nameToSearch.ToLower()).ToListAsync();
             return employeeByNameList;
         }
 
-        public async Task<IReadOnlyList<Employee>> GetAsync(CancellationTokenSource token, MyDBContext dbContext, int skip, int take)
+        public async Task<IReadOnlyList<Employee>> GetAsync(CancellationTokenSource token, int skip, int take)
         {
-            if (skip >= dbContext.Employees.Count())
+            if (skip >= _dbContext.Employees.Count())
             {
                 return null;
             }
 
-            var maxValue = dbContext.Employees.Count() > take + skip
-                ? take + skip : dbContext.Employees.Count();
+            var maxValue = _dbContext.Employees.Count() > take + skip
+                ? take + skip : _dbContext.Employees.Count();
 
-            return await dbContext.Employees.Where(x => x.Id >= skip && x.Id <= maxValue).ToListAsync();
+            return await _dbContext.Employees.Where(x => x.Id >= skip && x.Id <= maxValue).ToListAsync();
         }
 
-        public async Task<bool> AddAsync(CancellationTokenSource token, MyDBContext context, BaseEntity<int> entity)
+        public async Task<bool> AddAsync(CancellationTokenSource token, BaseEntity<int> entity)
         {
             var newemployee = (Employee)entity;
 
             if (newemployee == null) return false;
 
-            await context.Employees.AddAsync(newemployee);
-            await context.SaveChangesAsync();
+            await _dbContext.Employees.AddAsync(newemployee);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
 
-        public async Task<Employee> UpdateAsync(CancellationTokenSource token, MyDBContext dbContext, BaseEntity<int> entity)
+        public async Task<Employee> UpdateAsync(CancellationTokenSource token, BaseEntity<int> entity)
         {
             var updatedEmployee = (Employee)entity;
             if (updatedEmployee == null) return null;
 
-            if (dbContext.Employees.Any() == false) return null;
+            if (_dbContext.Employees.Any() == false) return null;
             
-            var dbEntity = await dbContext.Employees.FindAsync(entity.Id);
+            var dbEntity = await _dbContext.Employees.FindAsync(entity.Id);
 
             dbEntity.FirstName = updatedEmployee.FirstName;
             dbEntity.LastName = updatedEmployee.LastName;
@@ -64,20 +70,20 @@ namespace TimeSheet.DB.Repository
             dbEntity.Comment = updatedEmployee.Comment;
             dbEntity.IsDeleted = updatedEmployee.IsDeleted;
 
-            await dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return updatedEmployee;
         }
 
-        public async Task<bool> DeleteAsync(CancellationTokenSource token, MyDBContext dbContext, int id)
+        public async Task<bool> DeleteAsync(CancellationTokenSource token, int id)
         {
-            if (dbContext.Employees.Any() == false) return false;
+            if (_dbContext.Employees.Any() == false) return false;
 
-            var employeeToDelete = dbContext.Employees.First(x => x.Id == id);
+            var employeeToDelete = _dbContext.Employees.First(x => x.Id == id);
 
             employeeToDelete.IsDeleted = true;
 
-            await dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }

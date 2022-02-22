@@ -7,7 +7,7 @@ using TimeSheet.DB;
 
 namespace TimeSheet.DB.Migrations
 {
-    [DbContext(typeof(MyDBContext))]
+    [DbContext(typeof(MyDbContext))]
     partial class MyDBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

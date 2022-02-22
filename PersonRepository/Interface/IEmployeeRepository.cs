@@ -8,9 +8,9 @@ namespace TimeSheet.DB.Interface
 {
     public interface IEmployeeRepository : IRepository
     {
-        public Task<IReadOnlyList<Employee>> GetAsync(CancellationTokenSource token, MyDBContext dbContext, int employeeId);
-        public Task<IReadOnlyList<Employee>> GetAsync(CancellationTokenSource token, MyDBContext dbContext, string nameToSearch);
-        public Task<IReadOnlyList<Employee>> GetAsync(CancellationTokenSource token, MyDBContext dbContext, int skip, int take);
-        public Task<Employee> UpdateAsync(CancellationTokenSource token, MyDBContext dbContext, BaseEntity<int> entity);
+        public Task<IReadOnlyList<Employee>> GetAsync(CancellationTokenSource token, int employeeId);
+        public Task<IReadOnlyList<Employee>> GetAsync(CancellationTokenSource token, string nameToSearch);
+        public Task<IReadOnlyList<Employee>> GetAsync(CancellationTokenSource token, int skip, int take);
+        public Task<Employee> UpdateAsync(CancellationTokenSource token, BaseEntity<int> entity);
     }
 }

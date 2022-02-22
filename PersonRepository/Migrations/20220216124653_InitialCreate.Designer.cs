@@ -8,7 +8,7 @@ using TimeSheet.DB;
 
 namespace TimeSheet.DB.Migrations
 {
-    [DbContext(typeof(MyDBContext))]
+    [DbContext(typeof(MyDbContext))]
     [Migration("20220216124653_InitialCreate")]
     partial class InitialCreate
     {

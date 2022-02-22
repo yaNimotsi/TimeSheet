@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+
 using TimeSheet.DB.Entity;
 
 namespace TimeSheet.DB
 {
-    public sealed class MyDBContext : DbContext
+    public sealed class MyDbContext : DbContext
     {
-        public MyDBContext(DbContextOptions options) : base(options)
+        public MyDbContext(DbContextOptions options) : base(options)
         {
         }
 

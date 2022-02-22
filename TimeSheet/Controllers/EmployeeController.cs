@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using TimeSheet.BusinessLogic;
-using TimeSheet.DB;
 using TimeSheet.DB.Entity;
-using TimeSheet.DB.Interface;
 
 namespace TimeSheet.API.Controllers
 {
@@ -17,15 +15,11 @@ namespace TimeSheet.API.Controllers
     public class EmployeeController : Controller
     {
         private readonly EmployeeLogic _employeeLogic;
-        private readonly IEmployeeRepository _repository;
-        private readonly MyDBContext _context;
         private readonly CancellationTokenSource _token;
 
-        public EmployeeController(EmployeeLogic employeeLogic, IEmployeeRepository repository, MyDBContext context)
+        public EmployeeController(EmployeeLogic employeeLogic)
         {
             _employeeLogic = employeeLogic;
-            _repository = repository;
-            _context = context;
             _token = new CancellationTokenSource();
             _token.CancelAfter(5000);
         }
@@ -34,7 +28,7 @@ namespace TimeSheet.API.Controllers
         // GET: PersonController
         public async Task<ActionResult<IReadOnlyList<Employee>>> GetEmployeeById([FromRoute] int id)
         {
-            var result = await _employeeLogic.GetEmployeeByIDAsync(_token, _context, _repository, id);
+            var result = await _employeeLogic.GetEmployeeByIdAsync(_token, id);
 
             if (result is not { Count: > 0 })
             {
@@ -48,7 +42,7 @@ namespace TimeSheet.API.Controllers
         // GET: EmployeeController
         public async Task<ActionResult<IReadOnlyList<Employee>>> GetEmployeeByName([FromRoute] string nameToSearch)
         {
-            var result = await _employeeLogic.GetEmployeeByNameAsync(_token, _context, _repository, nameToSearch);
+            var result = await _employeeLogic.GetEmployeeByNameAsync(_token, nameToSearch);
 
             if (result is not { Count: > 0 })
             {
@@ -62,7 +56,7 @@ namespace TimeSheet.API.Controllers
         // GET: EmployeeController
         public async Task<ActionResult<IReadOnlyList<Employee>>> GetEmployeeByRange([FromRoute] int skipCount, [FromRoute] int takeCount)
         {
-            var result = await _employeeLogic.GetEmployeeByRangeAsync(_token, _context, _repository, skipCount, takeCount);
+            var result = await _employeeLogic.GetEmployeeByRangeAsync(_token, skipCount, takeCount);
 
             if (result is not { Count: > 0 })
             {
@@ -75,7 +69,7 @@ namespace TimeSheet.API.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateEmployee([FromBody] Employee entity)
         {
-            if (await _employeeLogic.AddNewEmployeeAsync(_token, _context, _repository, entity) != null)
+            if (await _employeeLogic.AddNewEmployeeAsync(_token, entity) != null)
             {
                 return Ok(entity);
             }
@@ -86,7 +80,7 @@ namespace TimeSheet.API.Controllers
         public async Task<ActionResult> UpdateEmployeeById([FromRoute] int id, [FromBody] Employee entity)
         {
             entity.Id = id;
-            var response = await _employeeLogic.UpdateEmployeeAsync(_token, _context, _repository, entity);
+            var response = await _employeeLogic.UpdateEmployeeAsync(_token, entity);
 
             return response == null ? NoContent() : Ok(response);
         }
@@ -94,7 +88,7 @@ namespace TimeSheet.API.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<ActionResult> DeleteEmployeeById([FromRoute] int id)
         {
-            var response = await _employeeLogic.DeleteEmployeeAsync(_token, _context, _repository, id);
+            var response = await _employeeLogic.DeleteEmployeeAsync(_token, id);
 
             return response ? Ok(true) : NoContent();
         }

@@ -12,51 +12,57 @@ namespace TimeSheet.DB.Repository
 {
     public class UserRepository : IUserRepository
     {
-        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token, MyDBContext dbContext, int userId)
+        private readonly MyDbContext _dbContext;
+
+        public UserRepository(MyDbContext dbContext)
         {
-            var userByIdList = await dbContext.Users.Where(x => x.Id == userId).ToListAsync();
+            _dbContext = dbContext;
+        }
+        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token, int userId)
+        {
+            var userByIdList = await _dbContext.Users.Where(x => x.Id == userId).ToListAsync();
             return userByIdList;
         }
 
-        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token, MyDBContext dbContext, string nameToSearch)
+        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token,  string nameToSearch)
         {
-            var userByNameList = await dbContext.Users.Where(x => x.FirstName == nameToSearch).ToListAsync();
+            var userByNameList = await _dbContext.Users.Where(x => x.FirstName == nameToSearch).ToListAsync();
             return userByNameList;
         }
 
-        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token, MyDBContext dbContext, int skip, int take)
+        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token,  int skip, int take)
         {
-            if (skip >= dbContext.Users.Count())
+            if (skip >= _dbContext.Users.Count())
             {
                 return null;
             }
 
-            var maxValue = dbContext.Users.Count() > take + skip
-                ? take + skip : dbContext.Users.Count();
+            var maxValue = _dbContext.Users.Count() > take + skip
+                ? take + skip : _dbContext.Users.Count();
             
-            return await dbContext.Users.Where(x => x.Id >= skip && x.Id < maxValue).ToListAsync();
+            return await _dbContext.Users.Where(x => x.Id >= skip && x.Id < maxValue).ToListAsync();
         }
 
-        public async Task<bool> AddAsync(CancellationTokenSource token, MyDBContext context, BaseEntity<int> entity)
+        public async Task<bool> AddAsync(CancellationTokenSource token,  BaseEntity<int> entity)
         {
 
             var newUser = (User)entity;
 
             if (newUser == null) return false;
 
-            await context.Users.AddAsync(newUser);
-            await context.SaveChangesAsync();
+            await _dbContext.Users.AddAsync(newUser);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         
-        public async Task<User> UpdateAsync(CancellationTokenSource token, MyDBContext dbContext, BaseEntity<int> entity)
+        public async Task<User> UpdateAsync(CancellationTokenSource token,  BaseEntity<int> entity)
         {
             var updatedUser = (User)entity;
             if (updatedUser == null) return null;
 
-            if (dbContext.Users.Any() == false) return null;
+            if (_dbContext.Users.Any() == false) return null;
 
-            var dbEntity = await  dbContext.Users.FirstOrDefaultAsync(x => x.Id == updatedUser.Id);
+            var dbEntity = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == updatedUser.Id);
 
             dbEntity.FirstName = updatedUser.FirstName;
             dbEntity.LastName = updatedUser.LastName;
@@ -64,20 +70,20 @@ namespace TimeSheet.DB.Repository
             dbEntity.Comment = updatedUser.Comment;
             dbEntity.IsDeleted = updatedUser.IsDeleted;
 
-            await dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return updatedUser;
         }
 
-        public async Task<bool> DeleteAsync(CancellationTokenSource token, MyDBContext dbContext, int id)
+        public async Task<bool> DeleteAsync(CancellationTokenSource token,  int id)
         {
-            if (dbContext.Users.Any() == false) return false;
+            if (_dbContext.Users.Any() == false) return false;
 
-            var userToDelete = dbContext.Users.First(x => x.Id == id);
+            var userToDelete = _dbContext.Users.First(x => x.Id == id);
 
             userToDelete.IsDeleted = true;
 
-            await dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
