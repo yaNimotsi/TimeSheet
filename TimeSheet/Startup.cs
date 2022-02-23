@@ -1,19 +1,20 @@
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using TimeSheet.BusinessLogic;
+using TimeSheet.DB;
+using TimeSheet.DB.Entity;
+using TimeSheet.DB.Interface;
+using TimeSheet.DB.Repository;
 
-namespace TimeSheet
+namespace TimeSheet.API
 {
     public class Startup
     {
@@ -23,8 +24,7 @@ namespace TimeSheet
         }
 
         public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
 
@@ -33,9 +33,19 @@ namespace TimeSheet
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TimeSheet", Version = "v1" });
             });
+            
+            services.AddDbContext<MyDbContext>(options => 
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            
+            services.AddSingleton<User>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<UserLogic>();
+            
+            services.AddSingleton<Employee>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<EmployeeLogic>();
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -45,7 +55,7 @@ namespace TimeSheet
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TimeSheet v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
