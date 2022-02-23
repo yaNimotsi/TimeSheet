@@ -1,6 +1,3 @@
-using System;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 using TimeSheet.BusinessLogic;
 using TimeSheet.DB;
-using TimeSheet.DB.Entity;
-using TimeSheet.DB.Interface;
-using TimeSheet.DB.Repository;
+using TimeSheet.DB.DAL.Entity;
+using TimeSheet.DB.DAL.Interface;
+using TimeSheet.DB.DAL.Interface.RepositoryInterface;
+using TimeSheet.DB.DAL.Repository;
 
 namespace TimeSheet.API
 {
@@ -47,25 +44,6 @@ namespace TimeSheet.API
             services.AddSingleton<Employee>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<EmployeeLogic>();
-
-            services.AddAuthentication(x =>
-                {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(x =>
-                {
-                    x.RequireHttpsMetadata = false;
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(UserService.SecretCode)),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ClockSkew = TimeSpan.Zero
-                    };
-                });
         }
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

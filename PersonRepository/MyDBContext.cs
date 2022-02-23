@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
-using TimeSheet.DB.Entity;
+using TimeSheet.DB.DAL.Entity;
 
 namespace TimeSheet.DB
 {

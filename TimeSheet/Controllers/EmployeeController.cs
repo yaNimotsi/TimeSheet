@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using TimeSheet.API.Mapping;
 using TimeSheet.BusinessLogic;
-using TimeSheet.DB.Entity;
+
+using APIEmployeeModel = TimeSheet.API.DAL.Entity.Employee;
 
 namespace TimeSheet.API.Controllers
 {
@@ -25,7 +27,7 @@ namespace TimeSheet.API.Controllers
 
         [HttpGet("byId/{id}")]
         // GET: PersonController
-        public async Task<ActionResult<IReadOnlyList<Employee>>> GetEmployeeById([FromRoute] int id)
+        public async Task<ActionResult<IReadOnlyList<APIEmployeeModel>>> GetEmployeeById([FromRoute] int id)
         {
             var result = await _employeeLogic.GetEmployeeByIdAsync(_token, id);
 
@@ -34,12 +36,12 @@ namespace TimeSheet.API.Controllers
                 return NoContent();
             }
 
-            return Ok(result);
+            return Ok(EmployeeMapping.MappingToAPIEmployeeModel(result.ToList()));
         }
 
         [HttpGet("byName/{nameToSearch}")]
         // GET: EmployeeController
-        public async Task<ActionResult<IReadOnlyList<Employee>>> GetEmployeeByName([FromRoute] string nameToSearch)
+        public async Task<ActionResult<IReadOnlyList<APIEmployeeModel>>> GetEmployeeByName([FromRoute] string nameToSearch)
         {
             var result = await _employeeLogic.GetEmployeeByNameAsync(_token, nameToSearch);
 
@@ -48,12 +50,12 @@ namespace TimeSheet.API.Controllers
                 return NoContent();
             }
 
-            return Ok(result);
+            return Ok(EmployeeMapping.MappingToAPIEmployeeModel(result.ToList()));
         }
 
         [HttpGet("skip/{skipCount}/taken/{takeCount}")]
         // GET: EmployeeController
-        public async Task<ActionResult<IReadOnlyList<Employee>>> GetEmployeeByRange([FromRoute] int skipCount, [FromRoute] int takeCount)
+        public async Task<ActionResult<IReadOnlyList<APIEmployeeModel>>> GetEmployeeByRange([FromRoute] int skipCount, [FromRoute] int takeCount)
         {
             var result = await _employeeLogic.GetEmployeeByRangeAsync(_token, skipCount, takeCount);
 
@@ -62,13 +64,14 @@ namespace TimeSheet.API.Controllers
                 return NoContent();
             }
 
-            return Ok(result);
+            return Ok(EmployeeMapping.MappingToAPIEmployeeModel(result.ToList()));
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateEmployee([FromBody] Employee entity)
+        public async Task<ActionResult> CreateEmployee([FromBody] APIEmployeeModel entity)
         {
-            if (await _employeeLogic.AddNewEmployeeAsync(_token, entity) != null)
+            var blUserModel = EmployeeMapping.MappingFromBLEmployeeModel(entity);
+            if (await _employeeLogic.AddNewEmployeeAsync(_token, blUserModel) != null)
             {
                 return Ok(entity);
             }
@@ -76,10 +79,11 @@ namespace TimeSheet.API.Controllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<ActionResult> UpdateEmployeeById([FromRoute] int id, [FromBody] Employee entity)
+        public async Task<ActionResult> UpdateEmployeeById([FromRoute] int id, [FromBody] APIEmployeeModel entity)
         {
             entity.Id = id;
-            var response = await _employeeLogic.UpdateEmployeeAsync(_token, entity);
+            var blUserModel = EmployeeMapping.MappingFromBLEmployeeModel(entity);
+            var response = await _employeeLogic.UpdateEmployeeAsync(_token, blUserModel);
 
             return response == null ? NoContent() : Ok(response);
         }

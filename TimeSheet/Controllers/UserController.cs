@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using TimeSheet.API.Mapping;
 using TimeSheet.BusinessLogic;
-using TimeSheet.DB.Entity;
+
+using APIUserModel = TimeSheet.API.DAL.Entity.User;
 
 namespace TimeSheet.API.Controllers
 {
@@ -25,7 +27,7 @@ namespace TimeSheet.API.Controllers
 
         [HttpGet("byId/{id}")]
         // GET: PersonController
-        public async Task<ActionResult<IReadOnlyList<User>>> GetUserById([FromRoute] int id)
+        public async Task<ActionResult<IReadOnlyList<APIUserModel>>> GetUserById([FromRoute] int id)
         {
             var result = await _userLogic.GetUserByIdAsync(_token, id);
             
@@ -34,12 +36,12 @@ namespace TimeSheet.API.Controllers
                 return NoContent();
             }
 
-            return Ok(result);
+            return Ok(UserMapping.MappingToAPIUserModel(result.ToList()));
         }
 
         [HttpGet("byName/{nameToSearch}")]
         // GET: PersonController
-        public async Task<ActionResult<IReadOnlyList<User>>> GetUserByName([FromRoute] string nameToSearch)
+        public async Task<ActionResult<IReadOnlyList<APIUserModel>>> GetUserByName([FromRoute] string nameToSearch)
         {
             var result = await _userLogic.GetUserByNameAsync(_token, nameToSearch);
             
@@ -48,12 +50,12 @@ namespace TimeSheet.API.Controllers
                 return NoContent();
             }
 
-            return Ok(result);
+            return Ok(UserMapping.MappingToAPIUserModel(result.ToList()));
         }
 
         [HttpGet("skip/{skipCount}/taken/{takeCount}")]
         // GET: PersonController
-        public async Task<ActionResult<IReadOnlyList<User>>> GetUserByRange([FromRoute] int skipCount, [FromRoute] int takeCount)
+        public async Task<ActionResult<IReadOnlyList<APIUserModel>>> GetUserByRange([FromRoute] int skipCount, [FromRoute] int takeCount)
         {
             var result = await _userLogic.GetUserByRangeAsync(_token, skipCount, takeCount);
 
@@ -62,13 +64,14 @@ namespace TimeSheet.API.Controllers
                 return NoContent();
             }
 
-            return Ok(result);
+            return Ok(UserMapping.MappingToAPIUserModel(result.ToList()));
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateUser([FromBody] User entity)
+        public async Task<ActionResult> CreateUser([FromBody] APIUserModel entity)
         {
-            if (await _userLogic.AddNewUserAsync(_token, entity) != null)
+            var blUserModel = UserMapping.MappingFromAPIUserModel(entity);
+            if (await _userLogic.AddNewUserAsync(_token, blUserModel) != null)
             {
                 return Ok(entity);
             }
@@ -76,13 +79,14 @@ namespace TimeSheet.API.Controllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<ActionResult> UpdateUserById([FromRoute] int id, [FromBody] User entity)
+        public async Task<ActionResult> UpdateUserById([FromRoute] int id, [FromBody] APIUserModel entity)
         {
             entity.Id = id;
 
-            var response = await _userLogic.UpdateUserAsync(_token, entity);
+            var blUserModel = UserMapping.MappingFromAPIUserModel(entity);
+            var response = await _userLogic.UpdateUserAsync(_token, blUserModel);
 
-            return response == null ? NoContent() : Ok(response);
+            return response == null ? NoContent() : Ok(UserMapping.MappingToAPIUserModel(response));
         }
 
         [HttpDelete("{id}")]

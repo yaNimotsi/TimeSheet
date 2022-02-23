@@ -1,8 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using TimeSheet.DB.Entity;
-using TimeSheet.DB.Interface;
+using TimeSheet.BusinessLogic.DAL.Interface;
+using TimeSheet.BusinessLogic.Mapping;
+using TimeSheet.DB.DAL.Entity;
+using TimeSheet.DB.DAL.Interface;
+using TimeSheet.DB.DAL.Interface.RepositoryInterface;
+using Employee = TimeSheet.BusinessLogic.DAL.Entity.Employee;
 
 namespace TimeSheet.BusinessLogic
 {
@@ -14,11 +19,11 @@ namespace TimeSheet.BusinessLogic
         {
             _repository = userRepository;
         }
-        public async Task<Employee> AddNewEmployeeAsync(CancellationTokenSource token,  BaseEntity<int> entity)
+        public async Task<Employee> AddNewEmployeeAsync(CancellationTokenSource token,  Employee entity)
         {
             if (entity == null) return null;
 
-            if (await _repository.AddAsync(token, entity))
+            if (await _repository.AddAsync(token, EmployeeMapping.MappingFromBLEmployeeModel(entity)))
             {
                 return (Employee)entity;
             }
@@ -30,28 +35,29 @@ namespace TimeSheet.BusinessLogic
         {
             var entityFromBase = await _repository.GetAsync(token, id);
 
-            return entityFromBase;
+            return EmployeeMapping.MappingToBLEmployeeModel(entityFromBase.ToList());
         }
 
         public async Task<IReadOnlyList<Employee>> GetEmployeeByNameAsync(CancellationTokenSource token,  string nameToSearch)
         {
-            return await _repository.GetAsync(token,  nameToSearch);
+            var entityFromBase = await _repository.GetAsync(token, nameToSearch);
+            return EmployeeMapping.MappingToBLEmployeeModel(entityFromBase.ToList());
         }
 
         public async Task<IReadOnlyList<Employee>> GetEmployeeByRangeAsync(CancellationTokenSource token,  int skip, int take)
         {
             var result = await _repository.GetAsync(token,  skip, take);
 
-            return result;
+            return EmployeeMapping.MappingToBLEmployeeModel(result.ToList());
         }
 
-        public async Task<Employee> UpdateEmployeeAsync(CancellationTokenSource token,  BaseEntity<int> entity)
+        public async Task<Employee> UpdateEmployeeAsync(CancellationTokenSource token, Employee entity)
         {
             if (entity == null) return null;
 
-            var updateUser = await _repository.UpdateAsync(token,  entity);
+            var updateUser = await _repository.UpdateAsync(token, EmployeeMapping.MappingFromBLEmployeeModel(entity));
 
-            return updateUser;
+            return EmployeeMapping.MappingToBLEmployeeModel(updateUser);
         }
 
         public async Task<bool> DeleteEmployeeAsync(CancellationTokenSource token,  int id)

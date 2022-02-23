@@ -1,9 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace TimeSheet.DB.Entity
+﻿namespace TimeSheet.API.DAL.Interface
 {
-    [Table("User", Schema = "TimeSheet")]
-    public sealed class User : BaseEntity<int>
+    public interface IEmployeeModel : IBaseEntity<int>
     {
         public string Comment { get; set; }
         public string FirstName { get; set; }
