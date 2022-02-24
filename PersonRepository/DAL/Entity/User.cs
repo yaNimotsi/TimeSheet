@@ -12,5 +12,8 @@ namespace TimeSheet.DB.DAL.Entity
         public string MiddleName { get; set; }
         public int Id { get; set; }
         public bool IsDeleted { get; set; }
+
+        public string UserName { get; set; }
+        public string UserPassword { get; set; }
     }
 }

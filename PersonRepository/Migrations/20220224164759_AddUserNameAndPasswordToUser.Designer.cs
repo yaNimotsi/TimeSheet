@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeSheet.DB;
 
 namespace TimeSheet.DB.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220224164759_AddUserNameAndPasswordToUser")]
+    partial class AddUserNameAndPasswordToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
