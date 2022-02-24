@@ -1,4 +1,3 @@
-using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,9 +9,10 @@ using Microsoft.OpenApi.Models;
 
 using TimeSheet.BusinessLogic;
 using TimeSheet.DB;
-using TimeSheet.DB.Entity;
-using TimeSheet.DB.Interface;
-using TimeSheet.DB.Repository;
+using TimeSheet.DB.DAL.Entity;
+using TimeSheet.DB.DAL.Interface;
+using TimeSheet.DB.DAL.Interface.RepositoryInterface;
+using TimeSheet.DB.DAL.Repository;
 
 namespace TimeSheet.API
 {

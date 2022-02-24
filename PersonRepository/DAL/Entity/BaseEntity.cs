@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace TimeSheet.DB.Entity
+namespace TimeSheet.DB.DAL.Entity
 {
     public class BaseEntity<TUniqueId> where TUniqueId : struct
     {

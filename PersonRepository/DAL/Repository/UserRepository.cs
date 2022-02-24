@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using TimeSheet.DB.DAL.Entity;
+using TimeSheet.DB.DAL.Interface;
+using TimeSheet.DB.DAL.Interface.ModelInterface;
+using TimeSheet.DB.DAL.Interface.RepositoryInterface;
 
-using TimeSheet.DB.Entity;
-using TimeSheet.DB.Interface;
-
-namespace TimeSheet.DB.Repository
+namespace TimeSheet.DB.DAL.Repository
 {
     public class UserRepository : IUserRepository
     {
@@ -43,7 +43,7 @@ namespace TimeSheet.DB.Repository
             return await _dbContext.Users.Where(x => x.Id >= skip && x.Id < maxValue).ToListAsync();
         }
 
-        public async Task<bool> AddAsync(CancellationTokenSource token,  BaseEntity<int> entity)
+        public async Task<bool> AddAsync(CancellationTokenSource token,  IBaseEntity<int> entity)
         {
 
             var newUser = (User)entity;
@@ -55,7 +55,7 @@ namespace TimeSheet.DB.Repository
             return true;
         }
         
-        public async Task<User> UpdateAsync(CancellationTokenSource token,  BaseEntity<int> entity)
+        public async Task<User> UpdateAsync(CancellationTokenSource token,  IUserModel entity)
         {
             var updatedUser = (User)entity;
             if (updatedUser == null) return null;
