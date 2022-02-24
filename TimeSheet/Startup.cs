@@ -1,19 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using TimeSheet.BusinessLogic;
+using TimeSheet.DB;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace TimeSheet
+namespace TimeSheet.API
 {
     public class Startup
     {
@@ -33,6 +27,9 @@ namespace TimeSheet
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TimeSheet", Version = "v1" });
             });
+            services.AddSingleton<PersonLogic>();
+            services.AddSingleton<Person>();
+            services.AddSingleton<IPersonRepository, PersonRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,7 +42,7 @@ namespace TimeSheet
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TimeSheet v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

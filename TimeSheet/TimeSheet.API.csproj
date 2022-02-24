@@ -8,4 +8,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PersonModel\TimeSheet.BusinessLogic.csproj" />
+    <ProjectReference Include="..\PersonRepository\TimeSheet.DB.csproj" />
+  </ItemGroup>
+
 </Project>
