@@ -1,3 +1,5 @@
+using System;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,13 +10,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
+using TimeSheet.API.DAL.Entity;
 using TimeSheet.BusinessLogic;
 using TimeSheet.DB;
-using TimeSheet.DB.DAL.Entity;
-using TimeSheet.DB.DAL.Interface;
 using TimeSheet.DB.DAL.Interface.RepositoryInterface;
 using TimeSheet.DB.DAL.Repository;
+using User = TimeSheet.DB.DAL.Entity.User;
+using UserAccessData = TimeSheet.DB.DAL.Entity.UserAccessData;
 
 namespace TimeSheet.API
 {
@@ -31,9 +33,52 @@ namespace TimeSheet.API
         {
             
             services.AddControllers();
+
+            services.AddAuthentication(x =>
+                {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(TokenModel._secretCode)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
+
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TimeSheet", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Bearer Authorization using the bearer scheme (Example: 'Bearer 123asdqwezxc'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
             });
 
             services.AddDbContext<MyDbContext>(options =>
@@ -43,13 +88,8 @@ namespace TimeSheet.API
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<UserLogic>();
 
-            services.AddSingleton<Employee>();
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            services.AddScoped<EmployeeLogic>();
-
             services.AddSingleton<UserAccessData>();
             services.AddScoped<IUserAccessRepository, UserAccessRepository>();
-            services.AddScoped<UserAccessLogic>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -65,6 +105,7 @@ namespace TimeSheet.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

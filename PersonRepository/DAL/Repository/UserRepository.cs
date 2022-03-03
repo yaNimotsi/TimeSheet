@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
+
 using TimeSheet.DB.DAL.Entity;
 using TimeSheet.DB.DAL.Interface;
 using TimeSheet.DB.DAL.Interface.ModelInterface;
@@ -24,13 +26,13 @@ namespace TimeSheet.DB.DAL.Repository
             return userByIdList;
         }
 
-        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token,  string nameToSearch)
+        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token, string nameToSearch)
         {
             var userByNameList = await _dbContext.Users.Where(x => x.FirstName == nameToSearch).ToListAsync();
             return userByNameList;
         }
 
-        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token,  int skip, int take)
+        public async Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token, int skip, int take)
         {
             if (skip >= _dbContext.Users.Count())
             {
@@ -39,11 +41,11 @@ namespace TimeSheet.DB.DAL.Repository
 
             var maxValue = _dbContext.Users.Count() > take + skip
                 ? take + skip : _dbContext.Users.Count();
-            
+
             return await _dbContext.Users.Where(x => x.Id >= skip && x.Id < maxValue).ToListAsync();
         }
 
-        public async Task<bool> AddAsync(CancellationTokenSource token,  IBaseEntity<int> entity)
+        public async Task<bool> AddAsync(CancellationTokenSource token, IBaseEntity<int> entity)
         {
 
             var newUser = (User)entity;
@@ -54,8 +56,8 @@ namespace TimeSheet.DB.DAL.Repository
             await _dbContext.SaveChangesAsync();
             return true;
         }
-        
-        public async Task<User> UpdateAsync(CancellationTokenSource token,  IUserModel entity)
+
+        public async Task<User> UpdateAsync(CancellationTokenSource token, IUserModel entity)
         {
             var updatedUser = (User)entity;
             if (updatedUser == null) return null;
@@ -75,7 +77,21 @@ namespace TimeSheet.DB.DAL.Repository
             return updatedUser;
         }
 
-        public async Task<bool> DeleteAsync(CancellationTokenSource token,  int id)
+        public async Task<UserAccessData> FindUserAsync(CancellationToken token, IUserAccessModel entity)
+        {
+            var user = await _dbContext.Users.
+                Where(x => x.UserName == entity.UserLogin && x.UserPassword == entity.UserPass).FirstAsync(token);
+
+            return new UserAccessData
+            {
+                Id = user.Id,
+                UserLogin = user.UserName,
+                UserPass = user.UserPassword,
+                IsDeleted = user.IsDeleted
+            };
+        }
+
+        public async Task<bool> DeleteAsync(CancellationTokenSource token, int id)
         {
             if (_dbContext.Users.Any() == false) return false;
 

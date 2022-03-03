@@ -2,7 +2,7 @@
 
 namespace TimeSheet.API.DAL.Entity
 {
-    public class UserAccessData : IUserAccessModel
+    public class UserAccessData : IUserAccessData
     {
         public int Id { get; set; }
         public string UserLogin { get; set; }

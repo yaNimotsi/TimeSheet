@@ -1,8 +1,6 @@
-﻿using TimeSheet.BusinessLogic.DAL.Interface;
-
-namespace TimeSheet.BusinessLogic.DAL.Entity
+﻿namespace TimeSheet.BusinessLogic.DAL.Interface
 {
-    public class UserAccessModel : IUserAccessModel
+    public interface IUserAccessData
     {
         public int Id { get; set; }
         public string UserLogin { get; set; }

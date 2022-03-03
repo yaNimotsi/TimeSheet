@@ -1,13 +1,12 @@
-﻿using TimeSheet.API.DAL.Entity;
-using TimeSheet.API.DAL.Interface;
+﻿using TimeSheet.API.DAL.Interface;
 
-using IBLUserAccess = TimeSheet.BusinessLogic.DAL.Interface.IUserAccessModel;
-using BLUserAccess = TimeSheet.BusinessLogic.DAL.Entity.UserAccessModel;
+using IBLUserAccess = TimeSheet.BusinessLogic.DAL.Interface.IUserAccessData;
+using BLUserAccess = TimeSheet.BusinessLogic.DAL.Entity.UserAccessData;
 namespace TimeSheet.API.Mapping
 {
-    public class UserAccessMapping
+    public static class UserAccessMapping
     {
-        public static IBLUserAccess MappingFromAPIUserAccessModel(IUserAccessModel entity)
+        public static IBLUserAccess MappingFromApiUserAccessModel(IUserAccessData entity)
         {
             if (entity == null) return null;
 

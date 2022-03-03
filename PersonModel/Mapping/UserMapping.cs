@@ -1,15 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using TimeSheet.BusinessLogic.DAL.Entity;
-using TimeSheet.DB.DAL.Interface.ModelInterface;
-
+using TimeSheet.BusinessLogic.DAL.Interface;
 using DBUserModelInterface = TimeSheet.DB.DAL.Interface.ModelInterface.IUserModel;
 using DBUserModel = TimeSheet.DB.DAL.Entity.User;
+using DbUserAccessModel = TimeSheet.DB.DAL.Entity.UserAccessData;
+using User = TimeSheet.BusinessLogic.DAL.Entity.User;
 
 namespace TimeSheet.BusinessLogic.Mapping
 {
     public static class UserMapping
     {
+        public static DbUserAccessModel MappingToDBUserAccessData(IUserAccessData entity)
+        {
+            if (entity == null) return null;
+
+            return new DbUserAccessModel()
+            {
+                Id = entity.Id,
+                UserLogin = entity.UserLogin,
+                UserPass = entity.UserPass,
+                IsDeleted = entity.IsDeleted
+            };
+        }
+
         public static User MappingToBLUserModel(DBUserModel entity)
         {
             if (entity == null) return null;

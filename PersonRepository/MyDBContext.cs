@@ -10,13 +10,11 @@ namespace TimeSheet.DB
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Employee> Employees { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasIndex(x => x.Id).IsUnique();
-            modelBuilder.Entity<Employee>().HasIndex(x => x.Id).IsUnique();
         }
     }
 }

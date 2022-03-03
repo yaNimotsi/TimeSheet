@@ -12,5 +12,6 @@ namespace TimeSheet.DB.DAL.Interface.RepositoryInterface
         public Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token, string nameToSearch);
         public Task<IReadOnlyList<User>> GetAsync(CancellationTokenSource token, int skip, int take);
         public Task<User> UpdateAsync(CancellationTokenSource token, IUserModel entity);
+        public Task<UserAccessData> FindUserAsync(CancellationToken token, IUserAccessModel entity);
     }
 }
